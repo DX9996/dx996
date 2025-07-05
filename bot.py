@@ -4,7 +4,6 @@ import json
 import asyncio
 import requests
 from pathlib import Path
-from datetime import datetime
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, JobQueue
 
@@ -13,7 +12,7 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 INDIWTF_TOKEN = os.getenv("INDIWTF_TOKEN")
 INDIWTF_API_BASE_URL = "https://indiwtf.com/api"
 DATA_FILE = Path("domains.json")
-PERIODIC_CHECK_INTERVAL = 15 * 60
+PERIODIC_CHECK_INTERVAL = 30 * 60
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -39,8 +38,7 @@ def save_data(data: dict):
             unique_domains = sorted(list(set(data.get("domains", []))))
             data["domains"] = unique_domains
             json.dump(data, f, indent=2)
-    except IOError as e:
-        logger.error("Error saving data to %s: %s", DATA_FILE, str(e))
+    except IOError as e: logger.error(f"Error saving data to {DATA_FILE}: {e}")
 
 async def check_domain_status(domain: str) -> dict:
     if not INDIWTF_TOKEN: return {"error": "Indiwtf API token is not configured."}
@@ -57,27 +55,25 @@ async def check_domain_status(domain: str) -> dict:
 
 # --- PERUBAHAN 1: Mengubah total format pesan status sesuai gambar kedua ---
 def format_status_message(result: dict, domain_to_check: str) -> str:
+    """Formats the API result to match the new desired format."""
     if "error" in result:
         return f"❌ Error checking {domain_to_check}: {result['error']}"
-
+    
     status = result.get("status", "unknown").upper()
     domain = result.get("domain", domain_to_check)
+    
+    # Buat URL lengkap yang akan otomatis menjadi link oleh Telegram
     full_url = f"https://{domain}/"
 
     if status == "BLOCKED":
         emoji = "❌"
         status_text = "Blocked"
-    else:
+    else:  # "OK" atau status lain dianggap "OK"
         emoji = "✅"
         status_text = "OK"
-    
-    # Ambil timestamp saat ini
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    # Gabungkan dalam format baru
-    
-return f"{full_url}: {emoji} {status_text} (checked at {now_str})"
-
+        
+    # Gabungkan menjadi format baru: https://domain.com/: ✅ OK
+    return f"{full_url}: {emoji} {status_text}"
 
 def get_domains_from_message(text: str) -> list[str]:
     parts = text.split(maxsplit=1)

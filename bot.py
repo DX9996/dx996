@@ -39,7 +39,9 @@ def save_data(data: dict):
             unique_domains = sorted(list(set(data.get("domains", []))))
             data["domains"] = unique_domains
             json.dump(data, f, indent=2)
-    except IOError as e: logger.error(f"Error saving data to {DATA_FILE}: {e}")
+   except IOError as e:
+    logger.error("Error saving data to %s: %s", DATA_FILE, str(e))
+
 
 async def check_domain_status(domain: str) -> dict:
     if not INDIWTF_TOKEN: return {"error": "Indiwtf API token is not configured."}

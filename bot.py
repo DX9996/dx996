@@ -55,25 +55,26 @@ async def check_domain_status(domain: str) -> dict:
 
 # --- PERUBAHAN 1: Mengubah total format pesan status sesuai gambar kedua ---
 def format_status_message(result: dict, domain_to_check: str) -> str:
-    """Formats the API result to match the new desired format."""
     if "error" in result:
         return f"❌ Error checking {domain_to_check}: {result['error']}"
-    
+
     status = result.get("status", "unknown").upper()
     domain = result.get("domain", domain_to_check)
-    
-    # Buat URL lengkap yang akan otomatis menjadi link oleh Telegram
     full_url = f"https://{domain}/"
 
     if status == "BLOCKED":
         emoji = "❌"
         status_text = "Blocked"
-    else:  # "OK" atau status lain dianggap "OK"
+    else:
         emoji = "✅"
         status_text = "OK"
-        
-    # Gabungkan menjadi format baru: https://domain.com/: ✅ OK
-    return f"{full_url}: {emoji} {status_text}"
+    
+    # Ambil timestamp saat ini
+    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # Gabungkan dalam format baru
+    return f"{full_url}: {emoji} {status_text} (🕒 {now_str})"
+
 
 def get_domains_from_message(text: str) -> list[str]:
     parts = text.split(maxsplit=1)

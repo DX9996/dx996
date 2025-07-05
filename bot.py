@@ -67,7 +67,7 @@ def format_status_message(result: dict, domain_to_check: str) -> str:
         emoji = "❌"
         status_text = "Blocked"
     else:
-        emoji = "👌"
+        emoji = "✅"
         status_text = "OK"
     
     # Ambil timestamp saat ini

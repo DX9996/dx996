@@ -76,7 +76,7 @@ def format_status_message(result: dict, domain_to_check: str) -> str:
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Gabungkan dalam format baru
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
 return f"{full_url}: {emoji} {status_text} (checked at {now_str})"
 
 

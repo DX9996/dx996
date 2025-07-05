@@ -74,7 +74,7 @@ def format_status_message(result: dict, domain_to_check: str) -> str:
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     # Gabungkan dalam format baru
-    return f"{full_url}: {emoji} {status_text} (🕒 {now_str})"
+    return f"{full_url}: {emoji} {status_text} (checked at {datetime.now().strftime('%H:%M:%S')})"
 
 
 def get_domains_from_message(text: str) -> list[str]:

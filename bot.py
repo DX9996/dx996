@@ -12,7 +12,7 @@ TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 INDIWTF_TOKEN = os.getenv("INDIWTF_TOKEN")
 INDIWTF_API_BASE_URL = "https://indiwtf.com/api"
 DATA_FILE = Path("domains.json")
-PERIODIC_CHECK_INTERVAL = 30 * 60
+PERIODIC_CHECK_INTERVAL = 60 * 60
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
